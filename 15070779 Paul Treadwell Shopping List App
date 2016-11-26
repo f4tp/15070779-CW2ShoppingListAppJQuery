@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Shopping List</title>
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+	
+	
+	<script type="text/javascript" src="http://dev.jtsage.com/cdn/spinbox/latest/jqm-spinbox.min.js"></script> <!-- this is an add on script link for the spinner box, needed in code if you want to use a spinner -->
+	
+	<script>
+	
+	var strFoodName
+	var quantOfFood
+	var dictChosenItems = {}; //global dictionary object to hold items and quantities
+	
+	function gotoQuantity(obj){
+
+		strFoodName = ($(obj).text()); //pass the obj paramter into the variable, obj will be set from the list view and will be passed using onClick
+		$.mobile.changePage("#selectQuant");
+		$("#foodname").text(strFoodName); //
+	}
+	
+	function storeDataToDictionary(){ //on video this function is called backToList
+				
+		returnToAllItems()
+		quantOfFood = $("#spin").val(); //gets the contents of the spinner object, uses val to convert the string of text to an integer
+		//alert(quantOfFood + " " + strFoodName + " added to the list"); //pops an alert up to tell them what they have added to the list
+		resetSpinner();
+		dictChosenItems[strFoodName] = quantOfFood; //add food and quant to dictionary
+		//alert(JSON.stringify(dictChosenItems)); //show the dictionary data structure
+			
+	}
+	
+	
+	
+	
+	function resetSpinner(){
+	$("#spin").val(1); //resets the spinner back to one for better user experience
+	}
+	
+	function resetSpinreturnHome(){
+	$("#spin").val(1); //resets the spinner back to one for better user experience
+	returnToAllItems()
+	
+	}
+	
+	function returnToAllItems(){
+	$.mobile.changePage("#allItems"); //goes back to all items page so the user can add more items to their shoping list
+	}
+	
+	function goToFinalShoppingList(){ //in tutorial video this is called showChosenItems
+	$.mobile.changePage("#finalShoppingList"); 
+	//$("#displayListItems").text(JSON.stringify(dictChosenItems)) //displays the contents of the dictionary all on one line, seperates them by comma
+	
+	//underneath loops through teh array using a for loop to output each item individually
+	var output = "";
+	for (var key in dictChosenItems){
+		output += key + " -> " + dictChosenItems[key] + "<hr/>";	//+= increments the value so the string is added to
+	
+	}
+	$("#displayListItems").html(output) //html output here as we are using HTMl in the strign of text to be output
+	
+	
+	}
+	
+	</script>
+	
+</head>
+
+<body>
+
+<!------------------------------------------ All items available -------------------------------------------------->
+	
+	
+	
+	<div data-role="page" id="allItems">
+		
+		
+		<div data-role="header">
+			<div data-role="main" class="ui-content">
+	
+			</div>
+  
+		</div>
+		
+	
+		<div data-role="main" class="ui-content">
+			<div data-role="main" class="ui-content">
+				<h2>Fruit & vegetables</h2>
+				
+				<form class="ui-filterable">
+					<input id="myFilter" data-type="search">
+				</form>
+				
+				<ul data-role="listview" data-filter="true" data-input="#myFilter" data-autodividers="true" data-inset="true">
+					<li><a onClick="gotoQuantity(this)">Apples</a></li>
+					<li><a onClick="gotoQuantity(this)">Aubergines</a></li>
+					<li><a onClick="gotoQuantity(this)">Bananas</a></li>
+					<li><a onClick="gotoQuantity(this)">Cherries</a></li>
+					<li><a onClick="gotoQuantity(this)">Chives</a></li>
+					<li><a onClick="gotoQuantity(this)">Fennel</a></li>
+					<li><a onClick="gotoQuantity(this)">Potatoes</a></li>
+					<li><a onClick="gotoQuantity(this)">Strawberries</a></li>
+
+				</ul>
+			</div>
+		</div>
+		
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#" data-icon="shop" onclick="goToFinalShoppingList();return false;"></a></li>
+
+			
+				
+				</ul>
+			</div>
+
+		</div>
+	
+
+	</div>
+
+<!----------------------------------------- enter quantity of chosen item page ----------------------------------------->
+		
+	<div data-role="page" id="selectQuant">
+		
+		<div data-role="header">
+			<div data-role="main" class="ui-content">
+			</div>
+  		</div>
+		
+	
+		<div data-role="main" class="ui-content">
+			<div data-role="main" class="ui-content">
+			<h2>Select Quantities</h2>
+			
+			
+			<div class="ui-field-contain">
+				<label for="spin" id="foodname"></label>
+				<input type="text" data-role="spinbox" name="spin" id="spin" value="1" min="0" max="100"/>
+			
+			</div>
+				
+							
+			</div>
+		</div>
+		
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#" data-icon="check" onclick="storeDataToDictionary();return false;"></a></li>
+					<li><a href="#" data-icon="delete" onclick="resetSpinreturnHome();return false;"></a></li>
+					<li><a href="#" data-icon="shop" onclick="goToFinalShoppingList();return false;"></a></li>
+			
+				
+				</ul>
+			</div>
+
+		</div>
+	
+
+	</div>
+	
+	<!----------------------------------------- Final made list ----------------------------------------->
+		
+	<div data-role="page" id="finalShoppingList">
+		<div data-role="header">
+			<h1>Final Shopping List...</h1>
+		</div>
+		
+	
+		<div data-role="main" class="ui-content">
+		<div id="displayListItems"></div>
+
+		</div>
+		
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#allItems" data-icon="home"></a></li>
+					<li><a href="#anylink" data-icon="delete"></a></li>
+				</ul>
+			</div>
+			<!-- <h2>&copy; Copyright Paul Treadwell 2016 </h2> -->
+		</div>
+	
+
+	</div>
+
+
+	
+</body>
+</html>
